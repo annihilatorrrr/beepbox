@@ -114,7 +114,7 @@ class Slider {
 		// touching the slider. This code prevents the initial slider change and
 		// reimplements it if the pointer will not scroll.
 		input.style.pointerEvents = "none";
-		this.container = span(input, {style: "touch-action: pan-y; display: flex;"});
+		this.container = span(input, {style: "touch-action: pan-y; display: flex; flex: 1;"});
 		new EasyPointers(this.container);
 		this.container.addEventListener("pointerdown", this._onPointerDown);
 		this.container.addEventListener("pointermove", this._onPointerMove);

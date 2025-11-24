@@ -1123,9 +1123,13 @@ document.head.appendChild(HTML.style({type: "text/css"}, `
 	justify-content: space-between;
 }
 
+.beepboxEditor .selectRow > :first-child {
+	width: 37.5%;
+}
+
 .beepboxEditor .selectRow > :last-child {
-	width: 62.5%;
-	flex-shrink: 0;
+	min-width: 0;
+	flex: 1;
 }
 
 .beepboxEditor .menu-area {
