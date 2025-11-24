@@ -514,7 +514,7 @@ export class SongEditor {
 	constructor(beepboxEditorContainer: HTMLElement) {
 		this.doc.notifier.watch(this.whenUpdated);
 		
-		window.addEventListener("resize", this.whenUpdated);
+		window.addEventListener("resize", this._whenResized);
 		window.requestAnimationFrame(this.updatePlayButton);
 		
 		if (!("share" in navigator)) {
@@ -657,11 +657,7 @@ export class SongEditor {
 			autoPlayOption.setAttribute("hidden", "");
 		}
 		
-		if (window.screen.availWidth < 710 || window.screen.availHeight < 710) {
-			const layoutOption: HTMLOptionElement = <HTMLOptionElement> this._optionsMenu.querySelector("[value=layout]");
-			layoutOption.disabled = true;
-			layoutOption.setAttribute("hidden", "");
-		}
+		this._updateLayoutOption();
 		
 		beepboxEditorContainer.appendChild(this.mainLayer);
 		this.whenUpdated();
@@ -692,6 +688,22 @@ export class SongEditor {
 		
 		if ("serviceWorker" in navigator) {
 			navigator.serviceWorker.register("/service_worker.js", {updateViaCache: "all", scope: "/"}).catch(() => {});
+		}
+	}
+	
+	private _whenResized = (): void => {
+		this._updateLayoutOption();
+		this.whenUpdated();
+	}
+	
+	private _updateLayoutOption(): void {
+		const layoutOption: HTMLOptionElement = <HTMLOptionElement> this._optionsMenu.querySelector("[value=layout]");
+		if (window.screen.availWidth < 710 || window.screen.availHeight < 710) {
+			layoutOption.disabled = true;
+			layoutOption.setAttribute("hidden", "");
+		} else {
+			layoutOption.disabled = false;
+			layoutOption.removeAttribute("hidden");
 		}
 	}
 	
