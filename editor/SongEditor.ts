@@ -24,7 +24,6 @@ import {SpectrumEditor} from "./SpectrumEditor.js";
 import {HarmonicsEditor} from "./HarmonicsEditor.js";
 import {BarScrollBar} from "./BarScrollBar.js";
 import {OctaveScrollBar} from "./OctaveScrollBar.js";
-import {MidiInputHandler} from "./MidiInput.js";
 import {KeyboardLayout} from "./KeyboardLayout.js";
 import {Piano} from "./Piano.js";
 import {BeatsPerBarPrompt} from "./BeatsPerBarPrompt.js";
@@ -511,7 +510,7 @@ export class SongEditor {
 	
 	constructor(beepboxEditorContainer: HTMLElement) {
 		this.doc.notifier.watch(this.whenUpdated);
-		new MidiInputHandler(this.doc);
+		
 		window.addEventListener("resize", this.whenUpdated);
 		window.requestAnimationFrame(this.updatePlayButton);
 		

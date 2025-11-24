@@ -69,7 +69,7 @@ export class RecordingSetupPrompt implements Prompt {
 				"Count-in 1 bar of metronome before recording:",
 				this._metronomeCountIn,
 			),
-			p("If you have a ", a({href: "https://caniuse.com/midi", target: "_blank"}, "compatible browser"), " on a device connected to a MIDI keyboard, you can use it to perform notes in BeepBox! (Or you could buy ", a({href: "https://imitone.com/", target: "_blank"}, "Imitone"), " or ", a({href: "https://vochlea.com/", target: "_blank"}, "Dubler"), " to hum notes into a microphone while wearing headphones!)"),
+			p("If you have a ", a({href: "https://caniuse.com/midi", target: "_blank"}, "compatible browser"), " on a device connected to a MIDI keyboard, enable this option to use it to perform notes in BeepBox! (Or you could buy ", a({href: "https://imitone.com/", target: "_blank"}, "Imitone"), " or ", a({href: "https://vochlea.com/", target: "_blank"}, "Dubler"), " to hum notes into a microphone while wearing headphones!)"),
 			label({style: "display: flex; flex-direction: row; align-items: center; height: 2em; justify-content: flex-end;"},
 				"Enable MIDI performance:",
 				this._enableMidi,
@@ -130,6 +130,8 @@ export class RecordingSetupPrompt implements Prompt {
 		this._doc.prefs.metronomeCountIn = this._metronomeCountIn.checked;
 		this._doc.prefs.metronomeWhileRecording = this._metronomeWhileRecording.checked;
 		this._doc.prefs.save();
+		// enableMidi may have changed, try registering a MIDI access handler again.
+		this._doc.midiInputHandler.tryRegisteringMidiAccessHandler();
 		this._close();
 	}
 	

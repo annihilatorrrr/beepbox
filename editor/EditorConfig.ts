@@ -15,7 +15,10 @@ export interface Preset extends BeepBoxOption {
 	readonly settings?: any;
 }
 
-export const isMobile: boolean = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|android|ipad|playbook|silk/i.test(navigator.userAgent);
+// Instead of checking the user agent string to determine whether the device is mobile,
+// try checking whether the primary pointer device is "coarse" (i.e. a touchscreen).
+// export const isMobile: boolean = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|android|ipad|playbook|silk/i.test(navigator.userAgent);
+export const isMobile: boolean = matchMedia("(pointer:coarse)").matches;
 
 export function prettyNumber(value: number): string {
 	return value.toFixed(2).replace(/\.?0*$/, "");
