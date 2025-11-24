@@ -1595,6 +1595,7 @@ export class Instrument {
 							this.drumsetSpectrumWaves[j].spectrum[i] = Math.max(0, Math.min(Config.spectrumMax, Math.round(Config.spectrumMax * (+drum["spectrum"][i]) / 100)));
 						}
 					}
+					this.drumsetSpectrumWaves[j].markCustomWaveDirty();
 				}
 			}
 		}
