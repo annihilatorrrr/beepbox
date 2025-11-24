@@ -19,6 +19,7 @@ export class SongPerformance {
 	private _pitchesChanged: boolean = false;
 	private _lastNote: Note | null = null;
 	private _recordingChange: ChangeGroup | null = null;
+	private _lowLatencyPreferredUntilTime: number = 0;
 	
 	constructor(private _doc: SongDocument) {
 		this._doc.notifier.watch(this._documentChanged);
@@ -27,10 +28,13 @@ export class SongPerformance {
 	}
 	
 	public play(): void {
-		this._doc.synth.play();
+		// If we're starting to play in non-record mode and it's been a little while since live input, go back to regular latency.
+		if (this._doc.synth.preferLowerLatency && performance.now() >= this._lowLatencyPreferredUntilTime) {
+			this._doc.synth.preferLowerLatency = false;
+		}
 		this._doc.synth.enableMetronome = false;
-		this._doc.synth.countInMetronome = false
-		this._doc.synth.maintainLiveInput();
+		this._doc.synth.countInMetronome = false;
+		this._doc.synth.play();
 	}
 	
 	public pause(): void {
@@ -234,6 +238,11 @@ export class SongPerformance {
 		this._doc.synth.liveInputStarted = true;
 		this._pitchesAreTemporary = true;
 		this._pitchesChanged = true;
+	}
+	
+	public preferLowLatency(): void {
+		this._doc.synth.preferLowerLatency = true;
+		this._lowLatencyPreferredUntilTime = performance.now() + 10000.0;
 	}
 	
 	public addPerformedPitch(pitch: number): void {
