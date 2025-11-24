@@ -20,6 +20,10 @@ export interface Preset extends BeepBoxOption {
 // export const isMobile: boolean = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|android|ipad|playbook|silk/i.test(navigator.userAgent);
 export const isMobile: boolean = matchMedia("(pointer:coarse)").matches;
 
+export const isOnMac: boolean = /^Mac/i.test(navigator.platform) || /Mac OS X/i.test(navigator.userAgent) || /^(iPhone|iPad|iPod)/i.test(navigator.platform) || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
+export const ctrlSymbol: string = isOnMac ? "⌘" : "Ctrl+";
+export const ctrlName: string = isOnMac ? "command" : "control";
+
 export function prettyNumber(value: number): string {
 	return value.toFixed(2).replace(/\.?0*$/, "");
 }
@@ -29,10 +33,6 @@ export class EditorConfig {
 	
 	public static readonly versionDisplayName: string = "BeepBox";
 	public static readonly releaseNotesURL: string = "https://github.com/johnnesky/beepbox/releases/tag/v" + EditorConfig.version;
-	
-	public static readonly isOnMac: boolean = /^Mac/i.test(navigator.platform) || /Mac OS X/i.test(navigator.userAgent) || /^(iPhone|iPad|iPod)/i.test(navigator.platform) || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
-	public static readonly ctrlSymbol: string = EditorConfig.isOnMac ? "⌘" : "Ctrl+";
-	public static readonly ctrlName: string = EditorConfig.isOnMac ? "command" : "control";
 	
 	public static readonly presetCategories: DictionaryArray<PresetCategory> = toNameMap([
 		{name: "Custom Instruments", presets: <DictionaryArray<Preset>> toNameMap([

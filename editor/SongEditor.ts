@@ -1,7 +1,7 @@
 // Copyright (c) John Nesky and contributing authors, distributed under the MIT license, see accompanying the LICENSE.md file.
 
 import {InstrumentType, EffectType, Config, getPulseWidthRatio, effectsIncludeTransition, effectsIncludeChord, effectsIncludePitchShift, effectsIncludeDetune, effectsIncludeVibrato, effectsIncludeNoteFilter, effectsIncludeDistortion, effectsIncludeBitcrusher, effectsIncludePanning, effectsIncludeChorus, effectsIncludeEcho, effectsIncludeReverb} from "../synth/SynthConfig.js";
-import {Preset, PresetCategory, EditorConfig, isMobile, prettyNumber} from "./EditorConfig.js";
+import {Preset, PresetCategory, EditorConfig, isMobile, isOnMac, ctrlSymbol, prettyNumber} from "./EditorConfig.js";
 import {ColorConfig, ChannelColors} from "./ColorConfig.js";
 import "./Layout.js"; // Imported here for the sake of ensuring this code is transpiled early.
 import {Instrument, Channel, Synth} from "../synth/synth.js";
@@ -171,6 +171,9 @@ class Slider {
 	};
 }
 
+// "hidden" should be true but looks wrong on mac chrome, adds checkmark next to first visible option even though it's not selected. :(
+const hideSelectMenuTitlesInOptions: boolean = !isOnMac;
+
 export class SongEditor {
 	public readonly doc: SongDocument = new SongDocument();
 	public prompt: Prompt | null = null;
@@ -192,10 +195,10 @@ export class SongEditor {
 	private readonly _nextBarButton: HTMLButtonElement = button({class: "nextBarButton", type: "button", title: "Next Bar (right bracket)"});
 	private readonly _volumeSlider: Slider = new Slider(input({title: "main volume", style: "flex-grow: 1; margin: 0;", type: "range", min: "0", max: "75", value: "50", step: "1"}), this.doc, (oldValue: number, newValue: number) => { this._setVolumeSlider(); return null; });
 	private readonly _fileMenu: HTMLSelectElement = select({style: "width: 100%;"},
-		option({selected: true, disabled: true, hidden: false}, "File"), // todo: "hidden" should be true but looks wrong on mac chrome, adds checkmark next to first visible option even though it's not selected. :(
+		option({selected: true, disabled: true, hidden: hideSelectMenuTitlesInOptions}, "File"),
 		option({value: "new"}, "+ New Blank Song"),
-		option({value: "import"}, "↑ Import Song... (" + EditorConfig.ctrlSymbol + "O)"),
-		option({value: "export"}, "↓ Export Song... (" + EditorConfig.ctrlSymbol + "S)"),
+		option({value: "import"}, "↑ Import Song... (" + ctrlSymbol + "O)"),
+		option({value: "export"}, "↓ Export Song... (" + ctrlSymbol + "S)"),
 		option({value: "copyUrl"}, "⎘ Copy Song URL"),
 		option({value: "shareUrl"}, "⤳ Share Song URL"),
 		option({value: "shortenUrl"}, "… Shorten Song URL"),
@@ -204,16 +207,16 @@ export class SongEditor {
 		option({value: "songRecovery"}, "⚠ Recover Recent Song..."),
 	);
 	private readonly _editMenu: HTMLSelectElement = select({style: "width: 100%;"},
-		option({selected: true, disabled: true, hidden: false}, "Edit"), // todo: "hidden" should be true but looks wrong on mac chrome, adds checkmark next to first visible option even though it's not selected. :(
+		option({selected: true, disabled: true, hidden: hideSelectMenuTitlesInOptions}, "Edit"),
 		option({value: "undo"}, "Undo (Z)"),
 		option({value: "redo"}, "Redo (Y)"),
 		option({value: "copy"}, "Copy Pattern (C)"),
 		option({value: "pasteNotes"}, "Paste Pattern Notes (V)"),
-		option({value: "pasteNumbers"}, "Paste Pattern Numbers (" + EditorConfig.ctrlSymbol + "⇧V)"),
+		option({value: "pasteNumbers"}, "Paste Pattern Numbers (" + ctrlSymbol + "⇧V)"),
 		option({value: "insertBars"}, "Insert Bar (⏎)"),
 		option({value: "deleteBars"}, "Delete Selected Bars (⌫)"),
-		option({value: "insertChannel"}, "Insert Channel (" + EditorConfig.ctrlSymbol + "⏎)"),
-		option({value: "deleteChannel"}, "Delete Selected Channels (" + EditorConfig.ctrlSymbol + "⌫)"),
+		option({value: "insertChannel"}, "Insert Channel (" + ctrlSymbol + "⏎)"),
+		option({value: "deleteChannel"}, "Delete Selected Channels (" + ctrlSymbol + "⌫)"),
 		option({value: "selectAll"}, "Select All (A)"),
 		option({value: "selectChannel"}, "Select Channel (⇧A)"),
 		option({value: "duplicatePatterns"}, "Duplicate Reused Patterns (D)"),
@@ -225,7 +228,7 @@ export class SongEditor {
 		option({value: "channelSettings"}, "Channel Settings... (Q)"),
 	);
 	private readonly _optionsMenu: HTMLSelectElement = select({style: "width: 100%;"},
-		option({selected: true, disabled: true, hidden: false}, "Preferences"), // todo: "hidden" should be true but looks wrong on mac chrome, adds checkmark next to first visible option even though it's not selected. :(
+		option({selected: true, disabled: true, hidden: hideSelectMenuTitlesInOptions}, "Preferences"),
 		option({value: "autoPlay"}, "Auto Play on Load"),
 		option({value: "autoFollow"}, "Show And Play The Same Bar"),
 		option({value: "enableNotePreview"}, "Hear Preview of Added Notes"),
@@ -280,7 +283,7 @@ export class SongEditor {
 	private readonly _fadeInOutRow: HTMLElement = div({class: "selectRow"}, span({class: "tip", onclick: ()=>this._openPrompt("fadeInOut")}, "Fade In/Out:"), this._fadeInOutEditor.container);
 	private readonly _transitionSelect: HTMLSelectElement = buildOptions(select(), Config.transitions.map(transition=>transition.name));
 	private readonly _transitionRow: HTMLDivElement = div({class: "selectRow"}, span({class: "tip", onclick: ()=>this._openPrompt("transition")}, "Transition:"), div({class: "selectContainer"}, this._transitionSelect));
-	private readonly _effectsSelect: HTMLSelectElement = select(option({selected: true, disabled: true, hidden: false})); // todo: "hidden" should be true but looks wrong on mac chrome, adds checkmark next to first visible option even though it's not selected. :(
+	private readonly _effectsSelect: HTMLSelectElement = select(option({selected: true, disabled: true, hidden: hideSelectMenuTitlesInOptions}));
 	private readonly _eqFilterEditor: FilterEditor = new FilterEditor(this.doc);
 	private readonly _eqFilterRow: HTMLElement = div({class: "selectRow"}, span({class: "tip", onclick: ()=>this._openPrompt("eqFilter")}, "EQ Filter:"), this._eqFilterEditor.container);
 	private readonly _noteFilterEditor: FilterEditor = new FilterEditor(this.doc, true);
