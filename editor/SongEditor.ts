@@ -822,8 +822,9 @@ export class SongEditor {
 			this._patternEditorNext.container.style.display = "";
 			this._patternEditorPrev.render();
 			this._patternEditorNext.render();
-			this._zoomInButton.style.display = "";
-			this._zoomOutButton.style.display = "";
+			const isDrumChannel: boolean = this.doc.song.getChannelIsNoise(this.doc.channel);
+			this._zoomInButton.style.display = isDrumChannel ? "none" : "";
+			this._zoomOutButton.style.display = isDrumChannel ? "none" : "";
 			this._zoomInButton.style.right = prefs.showScrollBar ? "24px" : "4px";
 			this._zoomOutButton.style.right = prefs.showScrollBar ? "24px" : "4px";
 		} else {
