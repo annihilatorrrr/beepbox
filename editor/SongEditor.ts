@@ -114,7 +114,7 @@ class Slider {
 		// touching the slider. This code prevents the initial slider change and
 		// reimplements it if the pointer will not scroll.
 		input.style.pointerEvents = "none";
-		this.container = span(input, {style: "touch-action: pan-y; display: flex; flex: 1;"});
+		this.container = span(input, {style: "touch-action: pan-y; display: flex;"});
 		new EasyPointers(this.container);
 		this.container.addEventListener("pointerdown", this._onPointerDown);
 		this.container.addEventListener("pointermove", this._onPointerMove);
@@ -530,6 +530,7 @@ export class SongEditor {
 		this._rhythmSelect.appendChild(optgroup({label: "Edit"},
 			option({value: "forceRhythm"}, "Snap Notes To Rhythm"),
 		));
+		this._tempoSlider.container.style.flex = "1";
 		
 		this._phaseModGroup.appendChild(div({class: "selectRow", style: `color: ${ColorConfig.secondaryText}; height: 1em; margin-top: 0.5em;`},
 			div({style: "margin-right: .1em; visibility: hidden;"}, 1 + "."),
