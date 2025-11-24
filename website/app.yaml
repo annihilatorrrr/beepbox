@@ -33,6 +33,13 @@ handlers:
   http_headers:
     Content-Disposition: "attachment; filename=beepbox_offline.html"
 
+- url: /3_0/beepbox_offline\.html
+  static_files: 3_0/beepbox_offline.html
+  upload: 3_0/beepbox_offline\.html
+  mime_type: text/html; charset=UTF-8
+  http_headers:
+    Content-Disposition: "attachment; filename=beepbox_offline.html"
+
 - url: /manifest\.webmanifest
   static_files: manifest.webmanifest
   upload: manifest\.webmanifest
