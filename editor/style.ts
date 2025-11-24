@@ -1102,6 +1102,10 @@ document.head.appendChild(HTML.style({type: "text/css"}, `
 	font-weight: bold;
 }
 
+.beepboxEditor .channelBoxLabel.smaller-digits {
+	font-size: 18px;
+}
+
 .beepboxEditor .muteEditor {
 	width: 32px;
 	flex-shrink: 0;
