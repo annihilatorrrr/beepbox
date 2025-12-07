@@ -168,23 +168,23 @@ export class PatternEditor {
 		
 		if (this._mouseX < 0 || this._mouseX > this._editorWidth || this._mouseY < 0 || this._mouseY > this._editorHeight || this._pitchHeight <= 0) return;
 		
+		const partsPerPattern: number = this._doc.song.beatsPerBar * Config.partsPerBeat;
 		const minDivision: number = this._getMinDivision();
 		this._cursor.exactPart = this._mouseX / this._partWidth;
 		this._cursor.part =
 			Math.floor(
-				Math.max(0,
-					Math.min(this._doc.song.beatsPerBar * Config.partsPerBeat - minDivision, this._cursor.exactPart)
-				)
+				Math.max(0, Math.min(partsPerPattern - minDivision, this._cursor.exactPart))
 			/ minDivision) * minDivision;
 		
 		if (this._pattern != null) {
+			const cursorPartForMatching: Number = Math.max(0, Math.min(partsPerPattern - 1, this._cursor.exactPart));
 			for (const note of this._pattern.notes) {
-				if (note.end <= this._cursor.exactPart) {
+				if (note.end <= cursorPartForMatching) {
 					this._cursor.prevNote = note;
 					this._cursor.curIndex++;
-				} else if (note.start <= this._cursor.exactPart && note.end > this._cursor.exactPart) {
+				} else if (note.start <= cursorPartForMatching && note.end > cursorPartForMatching) {
 					this._cursor.curNote = note;
-				} else if (note.start > this._cursor.exactPart) {
+				} else if (note.start > cursorPartForMatching) {
 					this._cursor.nextNote = note;
 					break;
 				}
@@ -287,7 +287,7 @@ export class PatternEditor {
 			}
 			this._cursor.end = this._cursor.start + defaultLength;
 			let forceStart: number = 0;
-			let forceEnd: number = this._doc.song.beatsPerBar * Config.partsPerBeat;
+			let forceEnd: number = partsPerPattern;
 			if (this._cursor.prevNote != null) {
 				forceStart = this._cursor.prevNote.end;
 			}
@@ -306,6 +306,10 @@ export class PatternEditor {
 				if (this._cursor.start < forceStart) {
 					this._cursor.start = forceStart;
 				}
+			}
+			if (this._cursor.start >= this._cursor.end) {
+				// Not a valid duration.
+				return;
 			}
 			
 			if (this._cursor.end - this._cursor.start == defaultLength) {
