@@ -114,7 +114,8 @@ class Slider {
 		// touching the slider. This code prevents the initial slider change and
 		// reimplements it if the pointer will not scroll.
 		input.style.pointerEvents = "none";
-		this.container = span(input, {style: "touch-action: pan-y; display: flex;"});
+		this.container = span(input, {style: "touch-action: pan-y; display: flex; cursor: pointer;"});
+		this.container.title = input.title;
 		new EasyPointers(this.container);
 		this.container.addEventListener("pointerdown", this._onPointerDown);
 		this.container.addEventListener("pointermove", this._onPointerMove);
@@ -991,7 +992,7 @@ export class SongEditor {
 			}
 			if (instrument.type == InstrumentType.pwm || instrument.type == InstrumentType.supersaw) {
 				this._pulseWidthRow.style.display = "";
-				this._pulseWidthSlider.input.title = prettyNumber(getPulseWidthRatio(instrument.pulseWidth) * 100) + "%";
+				this._pulseWidthSlider.container.title = prettyNumber(getPulseWidthRatio(instrument.pulseWidth) * 100) + "%";
 				this._pulseWidthSlider.updateValue(instrument.pulseWidth);
 			} else {
 				this._pulseWidthRow.style.display = "none";
@@ -1014,7 +1015,7 @@ export class SongEditor {
 			if (effectsIncludePitchShift(instrument.effects)) {
 				this._pitchShiftRow.style.display = "";
 				this._pitchShiftSlider.updateValue(instrument.pitchShift);
-				this._pitchShiftSlider.input.title = (instrument.pitchShift - Config.pitchShiftCenter) + " semitone(s)";
+				this._pitchShiftSlider.container.title = (instrument.pitchShift - Config.pitchShiftCenter) + " semitone(s)";
 				for (const marker of this._pitchShiftFifthMarkers) {
 					marker.style.display = prefs.showFifth ? "" : "none";
 				}
@@ -1025,7 +1026,7 @@ export class SongEditor {
 			if (effectsIncludeDetune(instrument.effects)) {
 				this._detuneRow.style.display = "";
 				this._detuneSlider.updateValue(instrument.detune);
-				this._detuneSlider.input.title = (Synth.detuneToCents(instrument.detune - Config.detuneCenter)) + " cent(s)";
+				this._detuneSlider.container.title = (Synth.detuneToCents(instrument.detune - Config.detuneCenter)) + " cent(s)";
 			} else {
 				this._detuneRow.style.display = "none";
 			}
@@ -1080,7 +1081,7 @@ export class SongEditor {
 				this._echoSustainSlider.updateValue(instrument.echoSustain);
 				this._echoDelayRow.style.display = "";
 				this._echoDelaySlider.updateValue(instrument.echoDelay);
-				this._echoDelaySlider.input.title = (Math.round((instrument.echoDelay + 1) * Config.echoDelayStepTicks / (Config.ticksPerPart * Config.partsPerBeat) * 1000) / 1000) + " beat(s)";
+				this._echoDelaySlider.container.title = (Math.round((instrument.echoDelay + 1) * Config.echoDelayStepTicks / (Config.ticksPerPart * Config.partsPerBeat) * 1000) / 1000) + " beat(s)";
 			} else {
 				this._echoSustainRow.style.display = "none";
 				this._echoDelayRow.style.display = "none";
