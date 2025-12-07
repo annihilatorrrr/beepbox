@@ -1961,7 +1961,17 @@ export class SongEditor {
 				(<any>navigator).share({ url: new URL("#" + this.doc.song.toBase64String(), location.href).href });
 				break;
 			case "shortenUrl":
-				window.open("https://tinyurl.com/api-create.php?url=" + encodeURIComponent(new URL("#" + this.doc.song.toBase64String(), location.href).href));
+				const songUrl: string = new URL("#" + this.doc.song.toBase64String(), location.href).href;
+				if (songUrl.length <= 5000) {
+					// is.gd supports URLs up to 5000 characters.
+					window.open("https://is.gd/create.php?url=" + encodeURIComponent(songUrl));
+				} else if (songUrl.length <= 15000) {
+					// tinyurl supports URLs up to 15000 characters. However, this API is deprecated,
+					// and their other API's free tier only allows 100 shortened links per month. :(
+					window.open("https://tinyurl.com/api-create.php?url=" + encodeURIComponent(songUrl));
+				} else {
+					window.alert("Sorry, it looks like this song's URL is too long. The URL shortener service only supports URLs up to 15000 characters, and your song's URL is " + songUrl.length + " characters long. Try https://pastelink.net/ instead?");
+				}
 				break;
 			case "viewPlayer":
 				location.href = "player/#song=" + this.doc.song.toBase64String();
