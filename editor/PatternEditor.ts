@@ -18,12 +18,13 @@ function makeEmptyReplacementElement<T extends Node>(node: T): T {
 
 class PatternCursor {
 	public valid:        boolean = false;
-	public isNearNote:   boolean = false;
+	public overrideScrolling: boolean = false; // If true, then a vertical drag on a touchscreen from this point should manipulate the note's volume instead of scrolling the page.
 	public prevNote:     Note | null = null;
 	public curNote:      Note | null = null;
 	public nextNote:     Note | null = null;
 	public pitch:        number = 0;
 	public pitchIndex:   number = -1;
+	public abovePitchIndex: number = 0;
 	public curIndex:     number = 0;
 	public start:        number = 0;
 	public end:          number = 0;
@@ -252,12 +253,15 @@ export class PatternEditor {
 			}
 			
 			if (this._cursor.pitchIndex != -1) {
-				this._cursor.isNearNote = true;
+				this._cursor.overrideScrolling = true;
 			} else if (this._pointers.latest.isTouch) {
+				// If the cursor is in an area above an existing note pitch (or just under the top of
+				// the editor), manipulate the note's volume with vertical drags instead of scrolling.
 				for (let i: number = 0; i < this._cursor.curNote.pitches.length; i++) {
 					const distance: number = this._cursor.curNote.pitches[i] - mousePitch + 0.5;
-					if (-15.5 < distance && distance < 0) {
-						this._cursor.isNearNote = true;
+					if (-15.5 < distance && (distance < 0 || this._mouseY < this._editorHeight * 0.25)) {
+						this._cursor.overrideScrolling = true;
+						this._cursor.abovePitchIndex = i;
 						break;
 					}
 				}
@@ -783,7 +787,7 @@ export class PatternEditor {
 					}
 					
 					this._dragTime = this._cursor.curNote.start + bendPart;
-					this._dragPitch = this._cursor.curNote.pitches[this._cursor.pitchIndex == -1 ? 0 : this._cursor.pitchIndex] + bendInterval;
+					this._dragPitch = this._cursor.curNote.pitches[this._cursor.abovePitchIndex] + bendInterval;
 					this._dragSize = bendSize;
 					this._dragVisible = true;
 					
@@ -835,7 +839,7 @@ export class PatternEditor {
 		
 		if (!(event.pointer!.isDown && this._cursor.valid && continuousState)) {
 			this._updateCursorStatus();
-			this._pointers.preventTouchGestureScrolling = (this._cursor.valid && this._cursor.isNearNote) || this._cursorIsInSelection();
+			this._pointers.preventTouchGestureScrolling = (this._cursor.valid && this._cursor.overrideScrolling) || this._cursorIsInSelection();
 			this._pointers.deferInitialEvents = event.pointer!.isTouch;
 			this._updatePreview();
 		}
