@@ -1276,6 +1276,29 @@ document.head.appendChild(HTML.style({type: "text/css"}, `
 	cursor: pointer;
 }
 
+.beepboxEditor progress {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border: none;
+	width: 200px;
+	height: 16px;
+	border-radius: 5px;
+	background-color: ${ColorConfig.uiWidgetBackground};
+}
+.beepboxEditor progress::-webkit-progress-bar {
+	background-color: ${ColorConfig.uiWidgetBackground};
+	border-radius: 5px;
+}
+.beepboxEditor progress::-webkit-progress-value {
+	background-color: ${ColorConfig.loopAccent};
+	border-radius: 5px;
+}
+.beepboxEditor progress::-moz-progress-bar {
+	background-color: ${ColorConfig.loopAccent};
+	border-radius: 5px;
+}
+
 /* wide screen */
 @media (min-width: 711px) {
 	#beepboxEditorContainer {
