@@ -30,7 +30,7 @@ export class SongRenderer {
 			const stopMillis: number = performance.now();
 			const elapsedMillis: number = stopMillis - startMillis;
 			const targetMillis: number = 1000 / 30;
-			samplesPerNextRender = Math.max(1000, Math.min(500000, samplesToRender * targetMillis / elapsedMillis));
+			samplesPerNextRender = Math.ceil(Math.max(1000, Math.min(500000, samplesToRender * targetMillis / elapsedMillis)));
 			sampleIndex = stopSample;
 			const completionRate: number = sampleIndex / totalSampleLength;
 			yield completionRate;
